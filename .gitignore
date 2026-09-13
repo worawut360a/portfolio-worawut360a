@@ -1,0 +1,15 @@
+node_modules/
+
+# สร้างอัตโนมัติตอน build จาก db/*.sql
+lib/sql-bundle.ts
+db/local.sqlite
+db/migrated.sql
+db/*.sqlite-wal
+db/*.sqlite-shm
+.env
+.env.local
+.netlify/
+dist/
+.next/
+*.tsbuildinfo
+.DS_Store

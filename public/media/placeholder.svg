@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="ยังไม่มีรูปภาพประกอบ">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#E6EEFF"/><stop offset="1" stop-color="#FFF6D6"/>
+  </linearGradient></defs>
+  <rect width="800" height="500" fill="url(#g)"/>
+  <text x="400" y="240" text-anchor="middle" font-size="76">🖼️</text>
+  <text x="400" y="310" text-anchor="middle" font-size="22" fill="#6B7896"
+        font-family="Sarabun, system-ui, sans-serif">ยังไม่มีรูปภาพประกอบ</text>
+</svg>

@@ -1,0 +1,31 @@
+# ตั้งค่า Netlify — ไม่ต้องแก้อะไร ใช้ได้เลย
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# ปลั๊กอินทางการของ Netlify สำหรับ Next.js
+# ทำให้ส่วนที่ต้องรันฝั่งเซิร์ฟเวอร์ (หลังบ้าน + การดึงข้อมูลสด) ทำงานได้
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# ค่าที่ Netlify จะถามตอนกดปุ่ม "Deploy to Netlify"
+# ข้อความในเครื่องหมายคำพูดจะขึ้นเป็นคำอธิบายให้ผู้ติดตั้งเห็น
+[template.environment]
+  TURSO_DATABASE_URL = "ที่อยู่ฐานข้อมูลจาก Turso ขึ้นต้นด้วย libsql:// (คัดลอกจากหน้า Turso)"
+  TURSO_AUTH_TOKEN = "โทเคนฐานข้อมูลจาก Turso (ข้อความยาว ๆ)"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# ไฟล์รูปที่มากับเทมเพลตแทบไม่เปลี่ยน แคชได้ยาว
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"

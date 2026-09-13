@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* ระบบดีไซน์ทั้งหมดยกมาจากเว็บ PHP ตรง ๆ (assets/css/app.css)
+   เพื่อให้หน้าตาเหมือนกันเป๊ะ — แก้ที่ไฟล์นั้นแล้วคัดลอกมาทับได้เลย
+
+   ต้องใส่ layer(components) เสมอ! ไม่งั้นกฎอย่าง a{color:inherit} ในไฟล์นี้
+   จะชนะคลาสของ Tailwind ทุกตัว เพราะ CSS ให้กฎที่ไม่อยู่ใน layer ชนะกฎที่อยู่ใน layer
+   ไม่ว่า specificity จะเป็นเท่าไหร่ → ลิงก์ที่ใส่ text-white ก็จะกลายเป็นสีดำ
+   (เว็บ PHP ไม่เจอปัญหานี้เพราะ Tailwind แบบ CDN ไม่ได้ใส่ layer) */
+@import "./design.css" layer(components);
+
+/* ---------------------------------------------------------------
+   ผูกสีของ Tailwind ให้ตรงกับที่เว็บ PHP ตั้งไว้ใน tailwind.config
+   (PHP ใช้ Tailwind แบบ CDN จึงตั้งใน <script> — ที่นี่ต้องประกาศแบบนี้)
+   --------------------------------------------------------------- */
+@theme inline {
+  --font-sans: var(--font-sarabun), system-ui, sans-serif;
+
+  /* primary ผูกกับตัวแปรธีม → เปลี่ยนตามธีมได้ทันที
+     Tailwind v4 จัดการความโปร่งใส (เช่น bg-primary/40) ให้เองด้วย color-mix
+     จึงไม่ต้องใส่ <alpha-value> แบบ v3 ซึ่งใช้ไม่ได้แล้ว */
+  --color-primary: rgb(var(--c-primary));
+  --color-primary-deep: rgb(var(--c-primary-deep));
+  --color-primary-soft: rgb(var(--c-primary-soft));
+  --color-primary-line: rgb(var(--c-primary-line));
+
+  /* สีคงที่ทุกธีม — สีประจำ 3 ด้าน วPA + สีเสริม */
+  --color-coral: #1F3B8F;
+  --color-coral-deep: #162C6B;
+  --color-coral-soft: #E6EBF8;
+  --color-mint: #E0B400;
+  --color-mint-deep: #9A7B00;
+  --color-mint-soft: #FFF6D6;
+  --color-sky: #E0457B;
+  --color-sky-deep: #B32D5E;
+  --color-sky-soft: #FCE4EE;
+  --color-sunny: #F5C518;
+  --color-sunny-deep: #C99A00;
+  --color-sunny-soft: #FFF6D6;
+  --color-lilac: #E0457B;
+  --color-lilac-deep: #B32D5E;
+  --color-lilac-soft: #FCE4EE;
+  --color-ink: #14213D;
+  --color-ink-soft: #3D4A66;
+  --color-ink-muted: #6B7896;
+  --color-ink-faint: #A3ADC2;
+  --color-cream: rgb(var(--c-bg));
+
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.5rem;
+
+  --shadow-soft: 0 10px 30px rgba(20, 33, 61, .07);
+  --shadow-lift: 0 22px 50px rgba(20, 33, 61, .12);
+  --shadow-glow: 0 10px 26px var(--glow);
+}
+
+/* ---------------------------------------------------------------
+   เชื่อมชื่อธีมของฝั่ง Next กับของ PHP
+   PHP ใช้ key เดิมจากฐานข้อมูลรุ่นแรก (pink/mint/lavender) ซึ่งชื่อไม่ตรงกับสีจริง
+   ฝั่งนี้ใช้ชื่อที่อ่านรู้เรื่อง จึงต้อง map ให้ได้ค่าสีชุดเดียวกันเป๊ะ
+     royal   = Royal Blue      → ของ PHP คือ mint
+     emerald = เขียวมรกต        → ของ PHP คือ pink (ค่าเริ่มต้น)
+     maroon  = แดงเลือดหมู      → ของ PHP คือ lavender
+   --------------------------------------------------------------- */
+[data-theme="royal"] {
+  --c-primary: 29 78 216;    --c-primary-deep: 30 58 138;
+  --c-primary-soft: 230 238 255; --c-primary-line: 191 209 245;
+  --c-bg: 245 248 253;
+  --primary: #1D4ED8; --primary-deep: #1E3A8A; --primary-soft: #E6EEFF; --primary-line: #BFD1F5;
+  --primary-2: #0EA5E9;
+  --bg: #F5F8FD; --bg-admin: #F1F5FB;
+  --grad: linear-gradient(135deg, #1E3A8A 0%, #0EA5E9 100%);
+  --grad-hero: linear-gradient(120deg, #172554 0%, #1E3A8A 55%, #1D4ED8 100%);
+  --grad-soft: linear-gradient(150deg, #E6EEFF, #FFF6D6);
+  --glow: rgba(29, 78, 216, .22);
+  --blob-a: #1E3A8A; --blob-b: #F5C518; --blob-c: #0EA5E9;
+}
+[data-theme="emerald"] {
+  --c-primary: 11 110 79;    --c-primary-deep: 7 79 56;
+  --c-primary-soft: 225 244 236; --c-primary-line: 178 224 205;
+  --c-bg: 245 251 248;
+  --primary: #0B6E4F; --primary-deep: #074F38; --primary-soft: #E1F4EC; --primary-line: #B2E0CD;
+  --primary-2: #12A06F;
+  --bg: #F5FBF8; --bg-admin: #F1F8F4;
+  --grad: linear-gradient(135deg, #074F38 0%, #12A06F 100%);
+  --grad-hero: linear-gradient(120deg, #053A29 0%, #0B6E4F 55%, #12A06F 100%);
+  --grad-soft: linear-gradient(150deg, #E1F4EC, #FFF6D6);
+  --glow: rgba(11, 110, 79, .22);
+  --blob-a: #0B6E4F; --blob-b: #F5C518; --blob-c: #12A06F;
+}
+[data-theme="maroon"] {
+  --c-primary: 140 29 63;    --c-primary-deep: 107 20 48;
+  --c-primary-soft: 250 231 237; --c-primary-line: 236 190 205;
+  --c-bg: 253 247 249;
+  --primary: #8C1D3F; --primary-deep: #6B1430; --primary-soft: #FAE7ED; --primary-line: #ECBECD;
+  --primary-2: #C0355F;
+  --bg: #FDF7F9; --bg-admin: #FBF3F6;
+  --grad: linear-gradient(135deg, #6B1430 0%, #C0355F 100%);
+  --grad-hero: linear-gradient(120deg, #4E0E23 0%, #8C1D3F 55%, #C0355F 100%);
+  --grad-soft: linear-gradient(150deg, #FAE7ED, #FFF6D6);
+  --glow: rgba(140, 29, 63, .22);
+  --blob-a: #8C1D3F; --blob-b: #F5C518; --blob-c: #C0355F;
+}
