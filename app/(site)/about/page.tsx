@@ -171,8 +171,8 @@ export default async function AboutPage() {
 
             {careers.length > 0 && (
               <div className="card-soft rounded-[2rem] p-6 md:p-8">
-                <span className="chip chip-2">🧭 เส้นทาง</span>
-                <h2 className="mt-3 text-[26px] md:text-[30px] font-extrabold leading-tight">เส้นทาง<span className="grad-text">รับราชการ</span></h2>
+                <span className="chip chip-2">🧭 ประวัติ</span>
+                <h2 className="mt-3 text-[26px] md:text-[30px] font-extrabold leading-tight">ประวัติ<span className="grad-text">การทำงาน</span></h2>
 
                 <div className="mt-6 grid sm:grid-cols-2 gap-4">
                   {careers.map((c) => (
