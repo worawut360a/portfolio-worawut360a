@@ -64,7 +64,7 @@ export default function CareerSection({ rows }: { rows: CareerPath[] }) {
         <div className="flex items-center gap-2.5">
           <span className="w-10 h-10 rounded-2xl grid place-items-center text-lg bg-mint-soft shrink-0">🧭</span>
           <div>
-            <h2 className="font-bold text-[16px]">เส้นทางรับราชการ</h2>
+            <h2 className="font-bold text-[16px]">ประวัติการทำงาน</h2>
             <p className="text-[12px] text-ink-muted">{rows.length} รายการ · ติ๊ก “ปัจจุบัน” ให้ตำแหน่งล่าสุด</p>
           </div>
         </div>
