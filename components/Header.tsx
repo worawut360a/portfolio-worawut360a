@@ -10,9 +10,9 @@ import { initialOf, activeMenu, type MenuKey } from '@/lib/theme'
 /** เมนูหลัก — ลำดับและชื่อตรงกับ partials/nav.php ของเว็บ PHP */
 const MENU: { key: MenuKey; href: string; label: string }[] = [
   { key: 'home', href: '/', label: 'หน้าแรก' },
-  { key: 'pa', href: '/pa', label: 'ข้อตกลง PA' },
+  { key: 'pa', href: '/pa', label: 'ข้อตกลงและพัฒนางาน PA' },
   { key: 'develop', href: '/development', label: 'การพัฒนาตนเอง' },
-  { key: 'about', href: '/about', label: 'ประวัติครู' },
+  { key: 'about', href: '/about', label: 'ประวัติครูผู้รับการประเมิน' },
   { key: 'contact', href: '/contact', label: 'ติดต่อ' },
 ]
 
