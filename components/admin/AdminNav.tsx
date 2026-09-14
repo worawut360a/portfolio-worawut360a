@@ -14,6 +14,7 @@ import type { Profile } from '@/lib/types'
 const NAV: [string, string, string][] = [
   ['🏠', 'แดชบอร์ด', '/admin'],
   ['📋', 'ข้อตกลง PA · ผลงาน', '/admin/pa'],
+  ['📋', 'ภาระงาน อ.ก.ค.ศ.', '/admin/workload'],
   ['👩‍🏫', 'โปรไฟล์ครู', '/admin/profile'],
   ['🌱', 'การพัฒนาตนเอง', '/admin/self-dev'],
   ['🏅', 'รางวัล', '/admin/awards'],
