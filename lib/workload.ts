@@ -34,162 +34,140 @@ export interface Workload {
   sort_order: number
 }
 
+let ready = false
+
 /* ============================================================
-   อ่านข้อมูลภาระงาน
+   ตรวจและเตรียมตาราง
+   ============================================================ */
+
+async function ensureTables() {
+  if (ready) return
+
+  /*
+   * สร้างตารางหลักถ้ายังไม่มี
+   */
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS workloads (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      academic_year INTEGER NOT NULL,
+      semester INTEGER NOT NULL DEFAULT 1,
+      category TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
+      hours REAL NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      deleted_at TEXT NULL
+    )
+  `)
+
+  /*
+   * ฐานข้อมูลบางชุดอาจสร้าง workloads ไปแล้ว
+   * ก่อนที่จะมีระบบรูป/ไฟล์
+   *
+   * จึงตรวจคอลัมน์แล้วเพิ่มเฉพาะตัวที่ยังไม่มี
+   */
+  const columns = await all<{ name: string }>(
+    `PRAGMA table_info(workloads)`
+  )
+
+  const names = new Set(
+    columns.map((c) => String(c.name))
+  )
+
+  const additions = [
+    {
+      name: 'image_source',
+      sql: `ALTER TABLE workloads ADD COLUMN image_source TEXT NULL`,
+    },
+    {
+      name: 'image_ref',
+      sql: `ALTER TABLE workloads ADD COLUMN image_ref TEXT NULL`,
+    },
+    {
+      name: 'file_source',
+      sql: `ALTER TABLE workloads ADD COLUMN file_source TEXT NULL`,
+    },
+    {
+      name: 'file_ref',
+      sql: `ALTER TABLE workloads ADD COLUMN file_ref TEXT NULL`,
+    },
+    {
+      name: 'file_name',
+      sql: `ALTER TABLE workloads ADD COLUMN file_name TEXT NOT NULL DEFAULT ''`,
+    },
+    {
+      name: 'sort_order',
+      sql: `ALTER TABLE workloads ADD COLUMN sort_order INTEGER NOT NULL DEFAULT 0`,
+    },
+  ]
+
+  for (const item of additions) {
+    if (!names.has(item.name)) {
+      await db.execute(item.sql)
+    }
+  }
+
+  ready = true
+}
+
+
+/* ============================================================
+   อ่านรายการทั้งหมด
    ============================================================ */
 
 export async function getWorkloads(): Promise<Workload[]> {
+  await ensureTables()
+
   return all<Workload>(`
     SELECT
-      w.id,
-      w.academic_year,
-      w.semester,
-      w.category,
-      w.title,
-      w.description,
-      w.hours,
-
-      (
-        SELECT wm.source
-        FROM workload_media wm
-        WHERE wm.workload_id = w.id
-          AND wm.media_type = 'image'
-        ORDER BY wm.sort_order, wm.id
-        LIMIT 1
-      ) AS image_source,
-
-      (
-        SELECT wm.ref
-        FROM workload_media wm
-        WHERE wm.workload_id = w.id
-          AND wm.media_type = 'image'
-        ORDER BY wm.sort_order, wm.id
-        LIMIT 1
-      ) AS image_ref,
-
-      (
-        SELECT wm.source
-        FROM workload_media wm
-        WHERE wm.workload_id = w.id
-          AND wm.media_type = 'file'
-        ORDER BY wm.sort_order, wm.id
-        LIMIT 1
-      ) AS file_source,
-
-      (
-        SELECT wm.ref
-        FROM workload_media wm
-        WHERE wm.workload_id = w.id
-          AND wm.media_type = 'file'
-        ORDER BY wm.sort_order, wm.id
-        LIMIT 1
-      ) AS file_ref,
-
-      (
-        SELECT wm.original_name
-        FROM workload_media wm
-        WHERE wm.workload_id = w.id
-          AND wm.media_type = 'file'
-        ORDER BY wm.sort_order, wm.id
-        LIMIT 1
-      ) AS file_name,
-
-      COALESCE(
-        (
-          SELECT MIN(wm.sort_order)
-          FROM workload_media wm
-          WHERE wm.workload_id = w.id
-        ),
-        0
-      ) AS sort_order
-
-    FROM workloads w
-
-    WHERE w.deleted_at IS NULL
-
-    ORDER BY
-      w.category,
-      sort_order,
-      w.id
+      id,
+      academic_year,
+      semester,
+      category,
+      title,
+      description,
+      hours,
+      image_source,
+      image_ref,
+      file_source,
+      file_ref,
+      file_name,
+      sort_order
+    FROM workloads
+    WHERE deleted_at IS NULL
+    ORDER BY category, sort_order, id
   `)
 }
 
 
 /* ============================================================
-   อ่านภาระงาน 1 รายการ
+   อ่านรายการเดียว
    ============================================================ */
 
 export async function getWorkload(
   id: number
 ): Promise<Workload | null> {
+  await ensureTables()
+
   return one<Workload>(`
     SELECT
-      w.id,
-      w.academic_year,
-      w.semester,
-      w.category,
-      w.title,
-      w.description,
-      w.hours,
-
-      (
-        SELECT wm.source
-        FROM workload_media wm
-        WHERE wm.workload_id = w.id
-          AND wm.media_type = 'image'
-        ORDER BY wm.sort_order, wm.id
-        LIMIT 1
-      ) AS image_source,
-
-      (
-        SELECT wm.ref
-        FROM workload_media wm
-        WHERE wm.workload_id = w.id
-          AND wm.media_type = 'image'
-        ORDER BY wm.sort_order, wm.id
-        LIMIT 1
-      ) AS image_ref,
-
-      (
-        SELECT wm.source
-        FROM workload_media wm
-        WHERE wm.workload_id = w.id
-          AND wm.media_type = 'file'
-        ORDER BY wm.sort_order, wm.id
-        LIMIT 1
-      ) AS file_source,
-
-      (
-        SELECT wm.ref
-        FROM workload_media wm
-        WHERE wm.workload_id = w.id
-          AND wm.media_type = 'file'
-        ORDER BY wm.sort_order, wm.id
-        LIMIT 1
-      ) AS file_ref,
-
-      (
-        SELECT wm.original_name
-        FROM workload_media wm
-        WHERE wm.workload_id = w.id
-          AND wm.media_type = 'file'
-        ORDER BY wm.sort_order, wm.id
-        LIMIT 1
-      ) AS file_name,
-
-      COALESCE(
-        (
-          SELECT MIN(wm.sort_order)
-          FROM workload_media wm
-          WHERE wm.workload_id = w.id
-        ),
-        0
-      ) AS sort_order
-
-    FROM workloads w
-
-    WHERE w.id = ?
-      AND w.deleted_at IS NULL
+      id,
+      academic_year,
+      semester,
+      category,
+      title,
+      description,
+      hours,
+      image_source,
+      image_ref,
+      file_source,
+      file_ref,
+      file_name,
+      sort_order
+    FROM workloads
+    WHERE id = ?
+      AND deleted_at IS NULL
   `, [id])
 }
 
@@ -203,6 +181,7 @@ export async function saveWorkload(
 ): Promise<{ ok: boolean; error?: string }> {
 
   await requireAdmin()
+  await ensureTables()
 
   const id = int(f, 'id')
   const academicYear = int(f, 'academic_year')
@@ -256,24 +235,17 @@ export async function saveWorkload(
   ) {
     return {
       ok: false,
-      error:
-        'จำนวนชั่วโมงต้องอยู่ระหว่าง 0–100 ชั่วโมง/สัปดาห์',
+      error: 'จำนวนชั่วโมงต้องอยู่ระหว่าง 0–100 ชั่วโมง/สัปดาห์',
     }
   }
 
   const image = media(f, 'image')
   const file = media(f, 'file')
-  const fileName = str(
-    f,
-    'file_name',
-    255
-  )
+  const fileName = str(f, 'file_name', 255)
 
   const t = now()
 
-  /* ----------------------------------------------------------
-     แก้ไขข้อมูลเดิม
-     ---------------------------------------------------------- */
+  /* -------------------- แก้ไข -------------------- */
 
   if (id) {
 
@@ -297,7 +269,6 @@ export async function saveWorkload(
     await db.execute({
       sql: `
         UPDATE workloads
-
         SET
           academic_year = ?,
           semester = ?,
@@ -305,8 +276,13 @@ export async function saveWorkload(
           title = ?,
           description = ?,
           hours = ?,
+          image_source = ?,
+          image_ref = ?,
+          file_source = ?,
+          file_ref = ?,
+          file_name = ?,
+          sort_order = ?,
           updated_at = ?
-
         WHERE id = ?
       `,
       args: [
@@ -316,132 +292,42 @@ export async function saveWorkload(
         title,
         description,
         hours,
+        image.source,
+        image.ref,
+        file.source,
+        file.ref,
+        fileName,
+        sortOrder,
         t,
         id,
       ],
     })
 
-    /*
-     * ลบหลักฐานเดิมของรายการนี้
-     * แล้วบันทึกหลักฐานชุดใหม่
-     */
-    await db.execute({
-      sql: `
-        DELETE FROM workload_media
-        WHERE workload_id = ?
-      `,
-      args: [id],
-    })
-
-    if (
-      image.source &&
-      image.ref
-    ) {
-      await db.execute({
-        sql: `
-          INSERT INTO workload_media
-          (
-            workload_id,
-            source,
-            ref,
-            media_type,
-            original_name,
-            caption,
-            sort_order,
-            created_at
-          )
-
-          VALUES (
-            ?,
-            ?,
-            ?,
-            'image',
-            '',
-            '',
-            0,
-            ?
-          )
-        `,
-        args: [
-          id,
-          image.source,
-          image.ref,
-          t,
-        ],
-      })
-    }
-
-    if (
-      file.source &&
-      file.ref
-    ) {
-      await db.execute({
-        sql: `
-          INSERT INTO workload_media
-          (
-            workload_id,
-            source,
-            ref,
-            media_type,
-            original_name,
-            caption,
-            sort_order,
-            created_at
-          )
-
-          VALUES (
-            ?,
-            ?,
-            ?,
-            'file',
-            ?,
-            '',
-            1,
-            ?
-          )
-        `,
-        args: [
-          id,
-          file.source,
-          file.ref,
-          fileName,
-          t,
-        ],
-      })
-    }
-
   }
 
-  /* ----------------------------------------------------------
-     เพิ่มข้อมูลใหม่
-     ---------------------------------------------------------- */
+  /* -------------------- เพิ่มใหม่ -------------------- */
 
   else {
 
-    const result = await db.execute({
+    await db.execute({
       sql: `
-        INSERT INTO workloads
-        (
+        INSERT INTO workloads (
           academic_year,
           semester,
           category,
           title,
           description,
           hours,
+          image_source,
+          image_ref,
+          file_source,
+          file_ref,
+          file_name,
+          sort_order,
           created_at,
           updated_at
         )
-
-        VALUES (
-          ?,
-          ?,
-          ?,
-          ?,
-          ?,
-          ?,
-          ?,
-          ?
-        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       args: [
         academicYear,
@@ -450,90 +336,16 @@ export async function saveWorkload(
         title,
         description,
         hours,
+        image.source,
+        image.ref,
+        file.source,
+        file.ref,
+        fileName,
+        sortOrder,
         t,
         t,
       ],
     })
-
-    const newId =
-      Number(result.lastInsertRowid)
-
-    if (
-      image.source &&
-      image.ref
-    ) {
-      await db.execute({
-        sql: `
-          INSERT INTO workload_media
-          (
-            workload_id,
-            source,
-            ref,
-            media_type,
-            original_name,
-            caption,
-            sort_order,
-            created_at
-          )
-
-          VALUES (
-            ?,
-            ?,
-            ?,
-            'image',
-            '',
-            '',
-            0,
-            ?
-          )
-        `,
-        args: [
-          newId,
-          image.source,
-          image.ref,
-          t,
-        ],
-      })
-    }
-
-    if (
-      file.source &&
-      file.ref
-    ) {
-      await db.execute({
-        sql: `
-          INSERT INTO workload_media
-          (
-            workload_id,
-            source,
-            ref,
-            media_type,
-            original_name,
-            caption,
-            sort_order,
-            created_at
-          )
-
-          VALUES (
-            ?,
-            ?,
-            ?,
-            'file',
-            ?,
-            '',
-            1,
-            ?
-          )
-        `,
-        args: [
-          newId,
-          file.source,
-          file.ref,
-          fileName,
-          t,
-        ],
-      })
-    }
   }
 
   revalidatePath('/workload')
@@ -554,15 +366,14 @@ export async function deleteWorkload(
 ): Promise<{ ok: boolean; error?: string }> {
 
   await requireAdmin()
+  await ensureTables()
 
   await db.execute({
     sql: `
       UPDATE workloads
-
       SET
         deleted_at = ?,
         updated_at = ?
-
       WHERE id = ?
         AND deleted_at IS NULL
     `,
