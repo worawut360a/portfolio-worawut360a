@@ -26,6 +26,10 @@ export default async function WorkloadAdminPage() {
   await requireAdmin()
 
   const rows = await getWorkloads()
+  cconst totalHours = rows.reduce(
+  (sum, row) => sum + Number(row.hours || 0),
+  0
+)
 
   return (
     <>
@@ -43,7 +47,29 @@ export default async function WorkloadAdminPage() {
         <p className="text-[12.5px] text-ink-muted mt-1">
           ข้อมูลที่บันทึกจะนำไปแสดงที่หน้าเว็บโดยอัตโนมัติ
         </p>
+<div className="card-soft mt-5 p-5">
+  <div className="flex items-center justify-between gap-4">
+    <div>
+      <div className="font-bold">
+        ผลรวมชั่วโมงภาระงาน
+      </div>
 
+      <div className="text-[12px] text-ink-muted mt-1">
+        รวมจากรายการที่บันทึกไว้ทั้งหมด
+      </div>
+    </div>
+
+    <div className="text-right">
+      <div className="text-3xl font-extrabold">
+        {totalHours}
+      </div>
+
+      <div className="text-[12px] text-ink-muted">
+        ชั่วโมง/สัปดาห์
+      </div>
+    </div>
+  </div>
+</div>
         <AjaxForm
           action={saveWorkloadAction}
           successMsg="เพิ่มภาระงานสำเร็จ!"
@@ -101,7 +127,44 @@ export default async function WorkloadAdminPage() {
                 ))}
               </select>
             </div>
+            <div>
+  <label className="lbl req">
+    รหัสวิชา
+  </label>
 
+  <input
+    className="inp"
+    name="subject_code"
+    placeholder="เช่น ว15101"
+    required
+  />
+</div>
+
+<div>
+  <label className="lbl req">
+    ชั้น
+  </label>
+
+  <input
+    className="inp"
+    name="grade_level"
+    placeholder="เช่น ป.5"
+    required
+  />
+</div>
+
+<div className="md:col-span-2">
+  <label className="lbl req">
+    รายวิชา
+  </label>
+
+  <input
+    className="inp"
+    name="subject_name"
+    placeholder="เช่น วิทยาการคำนวณ"
+    required
+  />
+</div>
             <div className="md:col-span-2">
               <label className="lbl req">
                 ชื่อภาระงาน
@@ -210,13 +273,30 @@ export default async function WorkloadAdminPage() {
                     {row.title}
                   </h3>
 
-                  <p className="text-[12.5px] text-ink-muted mt-1">
-                    ปีการศึกษา {row.academic_year}
-                    {' · '}
-                    ภาคเรียนที่ {row.semester}
-                    {' · '}
-                    {row.hours} ชั่วโมง/สัปดาห์
-                  </p>
+                  <div className="text-[13px] text-ink-soft mt-2">
+  <div>
+    <strong>รหัสวิชา:</strong>{' '}
+    {row.subject_code || '-'}
+  </div>
+
+  <div>
+    <strong>รายวิชา:</strong>{' '}
+    {row.subject_name || '-'}
+  </div>
+
+  <div>
+    <strong>ชั้น:</strong>{' '}
+    {row.grade_level || '-'}
+  </div>
+</div>
+
+<p className="text-[12.5px] text-ink-muted mt-2">
+  ปีการศึกษา {row.academic_year}
+  {' · '}
+  ภาคเรียนที่ {row.semester}
+  {' · '}
+  {row.hours} ชั่วโมง/สัปดาห์
+</p>
 
                   {row.description && (
                     <p className="text-[13px] text-ink-soft mt-3">
