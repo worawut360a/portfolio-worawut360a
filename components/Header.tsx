@@ -11,6 +11,7 @@ import { initialOf, activeMenu, type MenuKey } from '@/lib/theme'
 const MENU: { key: MenuKey; href: string; label: string }[] = [
   { key: 'home', href: '/', label: 'หน้าแรก' },
   { key: 'pa', href: '/pa', label: 'ข้อตกลงในการพัฒนางาน(PA)' },
+  { key: 'workload', href: '/workload', label: 'ภาระงานตาม อ.ก.ค.ศ.' },
   { key: 'develop', href: '/development', label: 'การพัฒนาตนเอง' },
   { key: 'about', href: '/about', label: 'ประวัติครูผู้รับการประเมิน' },
   { key: 'contact', href: '/contact', label: 'ติดต่อ' },
