@@ -99,10 +99,11 @@ export function currentFiscalYear(d = new Date()): number {
  * หน้ารายละเอียดไม่มีเมนูของตัวเอง จึงยืมของหมวดที่มันสังกัด
  * (ผลงาน/ตัวชี้วัด → PA, รางวัล/อบรม → การพัฒนาตนเอง)
  */
-export type MenuKey = 'home' | 'pa' | 'develop' | 'about' | 'contact' | ''
+export type MenuKey = 'home' | 'pa' | 'workload' | 'develop' | 'about' | 'contact' | ''
 
 export function activeMenu(path: string): MenuKey {
   if (path === '/') return 'home'
+  if (path.startsWith('/workload')) return 'workload'
   if (path.startsWith('/pa') || path.startsWith('/work') || path.startsWith('/indicator')) return 'pa'
   if (path.startsWith('/development') || path.startsWith('/training') || path.startsWith('/award')) return 'develop'
   if (path.startsWith('/about')) return 'about'
