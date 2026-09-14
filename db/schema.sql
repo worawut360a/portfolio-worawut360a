@@ -270,6 +270,31 @@ CREATE TABLE awards (
   deleted_at   TEXT NULL
 );
 
+-- ---------------------------------------------------------------------
+--  ความปลอดภัย / ระบบ
+-- ---------------------------------------------------------------------
+CREATE TABLE workload_media (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+  workload_id INTEGER NOT NULL,
+
+  source TEXT NOT NULL DEFAULT 'drive',
+  ref TEXT NOT NULL,
+
+  media_type TEXT NOT NULL DEFAULT 'image',
+
+  original_name TEXT NOT NULL DEFAULT '',
+  caption TEXT NOT NULL DEFAULT '',
+
+  sort_order INTEGER NOT NULL DEFAULT 0,
+
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (workload_id)
+    REFERENCES workloads(id)
+    ON DELETE CASCADE
+);
+
 -- รูป/ไฟล์แนบของรางวัลและการพัฒนาตนเอง (ใช้ตารางกลางร่วมกัน)
 CREATE TABLE item_images (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
