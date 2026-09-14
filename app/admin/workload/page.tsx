@@ -1,5 +1,4 @@
 import { requireAdmin } from '@/lib/auth'
-import { getWorkloads, WORKLOAD_CATEGORIES } from '@/lib/workload'
 import PageHead from '@/components/admin/PageHead'
 import AjaxForm, { SubmitButton } from '@/components/admin/AjaxForm'
 import DriveInput from '@/components/admin/DriveInput'
