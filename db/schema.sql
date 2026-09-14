@@ -271,7 +271,7 @@ CREATE TABLE awards (
 );
 
 -- ---------------------------------------------------------------------
---  ความปลอดภัย / ระบบ
+--  ใส่ภาพตารางสอน คำสั่งต่างๆ
 -- ---------------------------------------------------------------------
 CREATE TABLE workload_media (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -293,6 +293,27 @@ CREATE TABLE workload_media (
   FOREIGN KEY (workload_id)
     REFERENCES workloads(id)
     ON DELETE CASCADE
+);
+
+-- ---------------------------------------------------------------------
+--  ใส่ภาพตารางสอน คำสั่งต่างๆ
+-- ---------------------------------------------------------------------
+CREATE TABLE workloads (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+  academic_year INTEGER NOT NULL,
+  semester INTEGER NOT NULL DEFAULT 1,
+
+  category TEXT NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+
+  hours REAL NOT NULL DEFAULT 0,
+
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  deleted_at TEXT NULL
 );
 
 -- รูป/ไฟล์แนบของรางวัลและการพัฒนาตนเอง (ใช้ตารางกลางร่วมกัน)
