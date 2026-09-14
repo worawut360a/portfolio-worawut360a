@@ -13,6 +13,10 @@ const icons: Record<string, string> = {
 
 export default async function WorkloadPage() {
   const rows = await getWorkloads()
+  const totalHours = rows.reduce(
+  (sum, row) => sum + Number(row.hours || 0),
+  0
+)
 
   const totalHours = rows.reduce(
     (sum, row) => sum + Number(row.hours || 0),
@@ -157,12 +161,30 @@ export default async function WorkloadPage() {
                             {row.title}
                           </h3>
 
-                          <p className="text-[12px] text-ink-muted mt-1">
-                            ปีการศึกษา {row.academic_year}
-                            {' · '}
-                            ภาคเรียนที่ {row.semester}
-                          </p>
-                        </div>
+                          <div className="text-[13px] text-ink-soft mt-2">
+  <div>
+    <strong>รหัสวิชา:</strong>{' '}
+    {row.subject_code || '-'}
+  </div>
+
+  <div>
+    <strong>รายวิชา:</strong>{' '}
+    {row.subject_name || '-'}
+  </div>
+
+  <div>
+    <strong>ชั้น:</strong>{' '}
+    {row.grade_level || '-'}
+  </div>
+</div>
+
+<p className="text-[12px] text-ink-muted mt-2">
+  ปีการศึกษา {row.academic_year}
+  {' · '}
+  ภาคเรียนที่ {row.semester}
+  {' · '}
+  {row.hours} ชั่วโมง/สัปดาห์
+</p>
 
                         <span className="chip chip-primary shrink-0">
                           {row.hours} ชม.
