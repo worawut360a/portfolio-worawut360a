@@ -1,15 +1,24 @@
-import { requireAdmin } from '@/lib/auth'
-import PageHead from '@/components/admin/PageHead'
-import AjaxForm, { SubmitButton } from '@/components/admin/AjaxForm'
-import DriveInput from '@/components/admin/DriveInput'
-import DriveLinkInput from '@/components/admin/DriveLinkInput'
-import ConfirmDelete from '@/components/admin/ConfirmDelete'
 import {
   getWorkloads,
   WORKLOAD_CATEGORIES,
   saveWorkload,
   deleteWorkload,
 } from '@/lib/workload'
+
+import { requireAdmin } from '@/lib/auth'
+import PageHead from '@/components/admin/PageHead'
+import AjaxForm, { SubmitButton } from '@/components/admin/AjaxForm'
+import DriveInput from '@/components/admin/DriveInput'
+import DriveLinkInput from '@/components/admin/DriveLinkInput'
+import ConfirmDelete from '@/components/admin/ConfirmDelete'
+
+async function saveWorkloadAction(
+  f: FormData
+): Promise<{ ok: boolean; error?: string }> {
+  'use server'
+
+  return saveWorkload(f)
+}
 
 export const dynamic = 'force-dynamic'
 
@@ -36,7 +45,7 @@ export default async function WorkloadAdminPage() {
         </p>
 
         <AjaxForm
-          action={saveWorkload}
+          action={saveWorkloadAction}
           successMsg="เพิ่มภาระงานสำเร็จ!"
         >
           <div className="grid md:grid-cols-2 gap-4 mt-5">
