@@ -26,10 +26,12 @@ export default async function WorkloadAdminPage() {
   await requireAdmin()
 
   const rows = await getWorkloads()
-  cconst totalHours = rows.reduce(
-  (sum, row) => sum + Number(row.hours || 0),
-  0
-)
+
+  // คำนวณผลรวมชั่วโมงภาระงานทั้งหมด
+  const totalHours = rows.reduce(
+    (sum, row) => sum + Number(row.hours || 0),
+    0
+  )
 
   return (
     <>
@@ -38,7 +40,36 @@ export default async function WorkloadAdminPage() {
         sub="เพิ่ม แก้ไข ลบ และจัดการหลักฐานประกอบภาระงาน"
       />
 
-      {/* ฟอร์มเพิ่ม */}
+      {/* =====================================================
+          สรุปผลรวมชั่วโมง
+      ====================================================== */}
+      <section className="card-soft mt-5 p-5 md:p-7">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <div className="font-bold text-[16px]">
+              ผลรวมชั่วโมงภาระงาน
+            </div>
+
+            <div className="text-[12.5px] text-ink-muted mt-1">
+              รวมจากรายการภาระงานที่บันทึกไว้ทั้งหมด
+            </div>
+          </div>
+
+          <div className="text-right shrink-0">
+            <div className="text-3xl font-extrabold">
+              {totalHours}
+            </div>
+
+            <div className="text-[12px] text-ink-muted">
+              ชั่วโมง/สัปดาห์
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          ฟอร์มเพิ่มภาระงาน
+      ====================================================== */}
       <section className="card-soft mt-5 p-5 md:p-7">
         <h2 className="font-bold text-[16px]">
           ➕ เพิ่มภาระงาน
@@ -47,35 +78,14 @@ export default async function WorkloadAdminPage() {
         <p className="text-[12.5px] text-ink-muted mt-1">
           ข้อมูลที่บันทึกจะนำไปแสดงที่หน้าเว็บโดยอัตโนมัติ
         </p>
-<div className="card-soft mt-5 p-5">
-  <div className="flex items-center justify-between gap-4">
-    <div>
-      <div className="font-bold">
-        ผลรวมชั่วโมงภาระงาน
-      </div>
 
-      <div className="text-[12px] text-ink-muted mt-1">
-        รวมจากรายการที่บันทึกไว้ทั้งหมด
-      </div>
-    </div>
-
-    <div className="text-right">
-      <div className="text-3xl font-extrabold">
-        {totalHours}
-      </div>
-
-      <div className="text-[12px] text-ink-muted">
-        ชั่วโมง/สัปดาห์
-      </div>
-    </div>
-  </div>
-</div>
         <AjaxForm
           action={saveWorkloadAction}
           successMsg="เพิ่มภาระงานสำเร็จ!"
         >
           <div className="grid md:grid-cols-2 gap-4 mt-5">
 
+            {/* ปีการศึกษา */}
             <div>
               <label className="lbl req">
                 ปีการศึกษา
@@ -90,6 +100,7 @@ export default async function WorkloadAdminPage() {
               />
             </div>
 
+            {/* ภาคเรียน */}
             <div>
               <label className="lbl">
                 ภาคเรียน
@@ -110,6 +121,7 @@ export default async function WorkloadAdminPage() {
               </select>
             </div>
 
+            {/* หมวดภาระงาน */}
             <div className="md:col-span-2">
               <label className="lbl req">
                 หมวดภาระงาน
@@ -119,52 +131,62 @@ export default async function WorkloadAdminPage() {
                 className="inp"
                 name="category"
                 defaultValue={WORKLOAD_CATEGORIES[0]}
+                required
               >
                 {WORKLOAD_CATEGORIES.map((item) => (
-                  <option key={item} value={item}>
+                  <option
+                    key={item}
+                    value={item}
+                  >
                     {item}
                   </option>
                 ))}
               </select>
             </div>
+
+            {/* รหัสวิชา */}
             <div>
-  <label className="lbl req">
-    รหัสวิชา
-  </label>
+              <label className="lbl req">
+                รหัสวิชา
+              </label>
 
-  <input
-    className="inp"
-    name="subject_code"
-    placeholder="เช่น ว15101"
-    required
-  />
-</div>
+              <input
+                className="inp"
+                name="subject_code"
+                placeholder="เช่น ว15101"
+                required
+              />
+            </div>
 
-<div>
-  <label className="lbl req">
-    ชั้น
-  </label>
+            {/* ชั้น */}
+            <div>
+              <label className="lbl req">
+                ชั้น
+              </label>
 
-  <input
-    className="inp"
-    name="grade_level"
-    placeholder="เช่น ป.5"
-    required
-  />
-</div>
+              <input
+                className="inp"
+                name="grade_level"
+                placeholder="เช่น ป.5"
+                required
+              />
+            </div>
 
-<div className="md:col-span-2">
-  <label className="lbl req">
-    รายวิชา
-  </label>
+            {/* รายวิชา */}
+            <div className="md:col-span-2">
+              <label className="lbl req">
+                รายวิชา
+              </label>
 
-  <input
-    className="inp"
-    name="subject_name"
-    placeholder="เช่น วิทยาการคำนวณ"
-    required
-  />
-</div>
+              <input
+                className="inp"
+                name="subject_name"
+                placeholder="เช่น วิทยาการคำนวณ"
+                required
+              />
+            </div>
+
+            {/* ชื่อภาระงาน */}
             <div className="md:col-span-2">
               <label className="lbl req">
                 ชื่อภาระงาน
@@ -178,6 +200,7 @@ export default async function WorkloadAdminPage() {
               />
             </div>
 
+            {/* ชั่วโมง */}
             <div>
               <label className="lbl">
                 ชั่วโมง/สัปดาห์
@@ -193,6 +216,7 @@ export default async function WorkloadAdminPage() {
               />
             </div>
 
+            {/* ลำดับ */}
             <div>
               <label className="lbl">
                 ลำดับการแสดง
@@ -206,6 +230,7 @@ export default async function WorkloadAdminPage() {
               />
             </div>
 
+            {/* รายละเอียด */}
             <div className="md:col-span-2">
               <label className="lbl">
                 รายละเอียด
@@ -219,6 +244,7 @@ export default async function WorkloadAdminPage() {
               />
             </div>
 
+            {/* ภาพหลักฐาน */}
             <div className="md:col-span-2">
               <DriveInput
                 name="image"
@@ -227,6 +253,7 @@ export default async function WorkloadAdminPage() {
               />
             </div>
 
+            {/* เอกสารหลักฐาน */}
             <div className="md:col-span-2">
               <label className="lbl">
                 📄 เอกสารหลักฐาน
@@ -242,6 +269,7 @@ export default async function WorkloadAdminPage() {
             </div>
           </div>
 
+          {/* ปุ่มบันทึก */}
           <div className="flex justify-end mt-6 pt-5 border-t border-[color:var(--divider)]">
             <SubmitButton>
               💾 บันทึกภาระงาน
@@ -250,13 +278,16 @@ export default async function WorkloadAdminPage() {
         </AjaxForm>
       </section>
 
-      {/* รายการ */}
+      {/* =====================================================
+          รายการภาระงาน
+      ====================================================== */}
       <section className="mt-5">
         <h2 className="font-bold text-[16px] mb-3">
           📋 รายการภาระงานทั้งหมด ({rows.length})
         </h2>
 
         <div className="flex flex-col gap-3">
+
           {rows.map((row) => (
             <div
               key={row.id}
@@ -264,62 +295,79 @@ export default async function WorkloadAdminPage() {
             >
               <div className="flex flex-wrap gap-3 items-start justify-between">
 
+                {/* ข้อมูลภาระงาน */}
                 <div className="min-w-0">
+
+                  {/* หมวด */}
                   <span className="chip chip-primary">
                     {row.category}
                   </span>
 
+                  {/* ชื่อภาระงาน */}
                   <h3 className="font-bold text-[16px] mt-2">
                     {row.title}
                   </h3>
 
-                  <div className="text-[13px] text-ink-soft mt-2">
-  <div>
-    <strong>รหัสวิชา:</strong>{' '}
-    {row.subject_code || '-'}
-  </div>
+                  {/* ข้อมูลวิชา */}
+                  <div className="text-[13px] text-ink-soft mt-2 space-y-1">
 
-  <div>
-    <strong>รายวิชา:</strong>{' '}
-    {row.subject_name || '-'}
-  </div>
+                    <div>
+                      <strong>รหัสวิชา:</strong>{' '}
+                      {row.subject_code || '-'}
+                    </div>
 
-  <div>
-    <strong>ชั้น:</strong>{' '}
-    {row.grade_level || '-'}
-  </div>
-</div>
+                    <div>
+                      <strong>รายวิชา:</strong>{' '}
+                      {row.subject_name || '-'}
+                    </div>
 
-<p className="text-[12.5px] text-ink-muted mt-2">
-  ปีการศึกษา {row.academic_year}
-  {' · '}
-  ภาคเรียนที่ {row.semester}
-  {' · '}
-  {row.hours} ชั่วโมง/สัปดาห์
-</p>
+                    <div>
+                      <strong>ชั้น:</strong>{' '}
+                      {row.grade_level || '-'}
+                    </div>
 
+                  </div>
+
+                  {/* ปี / ภาคเรียน / ชั่วโมง */}
+                  <p className="text-[12.5px] text-ink-muted mt-2">
+                    ปีการศึกษา {row.academic_year}
+                    {' · '}
+                    ภาคเรียนที่ {row.semester}
+                    {' · '}
+                    {Number(row.hours || 0)} ชั่วโมง/สัปดาห์
+                  </p>
+
+                  {/* รายละเอียด */}
                   {row.description && (
-                    <p className="text-[13px] text-ink-soft mt-3">
+                    <p className="text-[13px] text-ink-soft mt-3 whitespace-pre-line">
                       {row.description}
                     </p>
                   )}
+
                 </div>
 
+                {/* ปุ่มลบ */}
                 <div className="flex gap-2 shrink-0">
                   <ConfirmDelete
                     action={async () => {
                       'use server'
+
                       return deleteWorkload(row.id)
                     }}
                     name={row.title}
                     successMsg="ลบภาระงานแล้ว"
                   />
                 </div>
+
               </div>
 
+              {/* =================================================
+                  หลักฐาน
+              ================================================== */}
               {(row.image_ref || row.file_ref) && (
                 <div className="mt-4 pt-4 border-t border-[color:var(--divider)] flex flex-wrap gap-2">
 
+                  {/* ดูภาพ */}
                   {row.image_ref && (
                     <a
                       href={`/workload#workload-${row.id}`}
@@ -329,6 +377,7 @@ export default async function WorkloadAdminPage() {
                     </a>
                   )}
 
+                  {/* เปิดเอกสาร */}
                   {row.file_ref && (
                     <a
                       href={`https://drive.google.com/file/d/${row.file_ref}/view`}
@@ -339,16 +388,20 @@ export default async function WorkloadAdminPage() {
                       📄 {row.file_name || 'เปิดเอกสาร'}
                     </a>
                   )}
+
                 </div>
               )}
+
             </div>
           ))}
 
+          {/* ไม่มีข้อมูล */}
           {rows.length === 0 && (
             <div className="card-soft p-10 text-center text-ink-muted">
               ยังไม่มีภาระงาน
             </div>
           )}
+
         </div>
       </section>
     </>
