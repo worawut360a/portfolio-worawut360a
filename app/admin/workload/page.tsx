@@ -5,7 +5,7 @@ import AjaxForm, { SubmitButton } from '@/components/admin/AjaxForm'
 import DriveInput from '@/components/admin/DriveInput'
 import DriveLinkInput from '@/components/admin/DriveLinkInput'
 import ConfirmDelete from '@/components/admin/ConfirmDelete'
-import { saveWorkload, deleteWorkload } from '@/lib/workload'
+import { getWorkloads, WORKLOAD_CATEGORIES } from '@/lib/workload'
 
 export const dynamic = 'force-dynamic'
 
