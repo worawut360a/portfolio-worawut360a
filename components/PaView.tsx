@@ -96,8 +96,8 @@ export default async function PaView({ year }: { year?: number }) {
               <span className="chip chip-grad">วPA ว9/2564</span>
             </div>
             <h1 className="mt-4 text-[30px] md:text-[44px] font-extrabold leading-[1.1] tracking-tight">
-              ข้อตกลงในการพัฒนางาน <span className="text-[color:var(--gold)]">(PA)</span>{' '}
-              <br className="hidden md:block" />และผลงาน 15 ตัวชี้วัด
+              รายงานผลการดำเนินงานตามข้อตกลงในการพัฒนางาน <span className="text-[color:var(--gold)]">(PA)</span>{' '}
+              <br className="hidden md:block" />และผลการปฏิบัติงาน
             </h1>
             <p className="mt-3 text-[13.5px] md:text-[15px] text-white/80 max-w-[640px]">
               จัดเก็บแยกรายปีงบประมาณ · <b className="text-[color:var(--gold-line)]">คลิกที่ตัวชี้วัดเพื่อดูผลงานและหลักฐานของตัวชี้วัดนั้น</b>
@@ -180,7 +180,7 @@ export default async function PaView({ year }: { year?: number }) {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
             <div>
               <span className="chip chip-primary">🔖 ตอนที่ 2</span>
-              <h2 className="mt-3 text-[26px] md:text-[34px] font-extrabold leading-tight">ข้อตกลงในการพัฒนางาน <span className="grad-text">15 ตัวชี้วัด</span></h2>
+              <h2 className="mt-3 text-[26px] md:text-[34px] font-extrabold leading-tight">รายงานผลการดำเนินงานตามข้อตกลงในการพัฒนางาน(PA)<span className="grad-text">และผลการปฏิบัติงาน</span></h2>
             </div>
             <p className="text-[13.5px] text-ink-muted md:max-w-[360px]">👆 แตะที่ตัวชี้วัดเพื่อดูผลงานและหลักฐาน · ย่อ/ขยายแต่ละด้านได้จากแถบหัวเรื่อง</p>
           </div>
