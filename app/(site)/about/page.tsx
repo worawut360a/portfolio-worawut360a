@@ -72,7 +72,7 @@ export default async function AboutPage() {
           <div className="min-w-0 text-center lg:text-left">
             <div className="flex flex-wrap justify-center lg:justify-start gap-2">
               <span className="chip chip-glass">👩‍🏫 ประวัติครู</span>
-              {profile?.nickname && <span className="chip chip-ink">ครู{profile.nickname}</span>}
+              {profile?.nickname && <span className="chip chip-ink">ของ{profile.nickname}</span>}
             </div>
 
             <h1 className="mt-5 text-[34px] md:text-[50px] font-extrabold leading-[1.08] tracking-tight">
@@ -135,7 +135,7 @@ export default async function AboutPage() {
             <div>
               <span className="chip chip-primary">👋 แนะนำตัว</span>
               <h2 className="mt-3 text-[26px] md:text-[34px] font-extrabold leading-tight">
-                รู้จัก<span className="grad-text">ครู{profile?.nickname ?? ''}</span>
+                รู้จัก<span className="grad-text">กับ{profile?.nickname ?? ''}</span>
               </h2>
               <p className="mt-1 text-[13.5px] text-ink-muted">เรื่องราว แนวคิด และความตั้งใจในการจัดการเรียนรู้</p>
             </div>
