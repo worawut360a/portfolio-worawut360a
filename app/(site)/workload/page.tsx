@@ -13,16 +13,14 @@ const icons: Record<string, string> = {
 
 export default async function WorkloadPage() {
   const rows = await getWorkloads()
-  const totalHours = rows.reduce(
-  (sum, row) => sum + Number(row.hours || 0),
-  0
-)
 
+  // ผลรวมชั่วโมงภาระงานทั้งหมด
   const totalHours = rows.reduce(
     (sum, row) => sum + Number(row.hours || 0),
     0
   )
 
+  // รายการหมวดภาระงาน
   const groups = Array.from(
     new Set(rows.map((row) => row.category))
   )
@@ -30,9 +28,12 @@ export default async function WorkloadPage() {
   return (
     <main>
 
-      {/* HERO */}
+      {/* =====================================================
+          HERO
+      ====================================================== */}
       <section className="relative overflow-hidden mesh">
         <div className="blob blob-1 w-[320px] h-[320px] -right-20 -top-10" />
+
         <div className="blob blob-3 w-[220px] h-[220px] -left-16 bottom-0 hidden md:block" />
 
         <div className="relative max-w-[1240px] mx-auto px-4 md:px-10 py-12 md:py-16">
@@ -54,30 +55,37 @@ export default async function WorkloadPage() {
             พร้อมหลักฐานประกอบการปฏิบัติงาน
           </p>
 
+          {/* สถิติ */}
           <div className="mt-7 grid grid-cols-2 md:grid-cols-3 gap-3 max-w-[700px]">
 
+            {/* จำนวนรายการ */}
             <div className="card-soft p-4">
               <p className="text-[11px] text-ink-muted">
                 รายการภาระงาน
               </p>
+
               <p className="text-2xl font-extrabold mt-1">
                 {rows.length}
               </p>
             </div>
 
+            {/* ชั่วโมงรวม */}
             <div className="card-soft p-4">
               <p className="text-[11px] text-ink-muted">
                 ชั่วโมงรวม/สัปดาห์
               </p>
+
               <p className="text-2xl font-extrabold mt-1">
                 {totalHours}
               </p>
             </div>
 
+            {/* จำนวนหมวด */}
             <div className="card-soft p-4 col-span-2 md:col-span-1">
               <p className="text-[11px] text-ink-muted">
                 หมวดงาน
               </p>
+
               <p className="text-2xl font-extrabold mt-1">
                 {groups.length}
               </p>
@@ -87,7 +95,9 @@ export default async function WorkloadPage() {
         </div>
       </section>
 
-      {/* CONTENT */}
+      {/* =====================================================
+          CONTENT
+      ====================================================== */}
       <section className="max-w-[1240px] mx-auto px-4 md:px-10 py-10">
 
         {groups.map((category) => {
@@ -106,6 +116,7 @@ export default async function WorkloadPage() {
               className="mb-7"
             >
 
+              {/* หัวข้อหมวด */}
               <div className="flex flex-wrap items-end justify-between gap-3 mb-3">
 
                 <div>
@@ -124,6 +135,7 @@ export default async function WorkloadPage() {
 
               </div>
 
+              {/* รายการ */}
               <div className="grid md:grid-cols-2 gap-4">
 
                 {categoryRows.map((row) => (
@@ -133,6 +145,9 @@ export default async function WorkloadPage() {
                     className="card-soft overflow-hidden"
                   >
 
+                    {/* =================================================
+                        ภาพหลักฐาน
+                    ================================================== */}
                     {row.image_ref && (
                       <div className="aspect-[16/9] bg-primary-soft overflow-hidden">
 
@@ -152,55 +167,75 @@ export default async function WorkloadPage() {
                       </div>
                     )}
 
+                    {/* =================================================
+                        ข้อมูล
+                    ================================================== */}
                     <div className="p-5">
 
-                      <div className="flex justify-between gap-3">
+                      {/* ชื่อ + ชั่วโมง */}
+                      <div className="flex justify-between gap-3 items-start">
 
-                        <div>
+                        {/* ข้อมูลด้านซ้าย */}
+                        <div className="min-w-0">
+
                           <h3 className="font-extrabold text-[17px]">
                             {row.title}
                           </h3>
 
-                          <div className="text-[13px] text-ink-soft mt-2">
-  <div>
-    <strong>รหัสวิชา:</strong>{' '}
-    {row.subject_code || '-'}
-  </div>
+                          {/* ข้อมูลรายวิชา */}
+                          <div className="text-[13px] text-ink-soft mt-2 space-y-1">
 
-  <div>
-    <strong>รายวิชา:</strong>{' '}
-    {row.subject_name || '-'}
-  </div>
+                            <div>
+                              <strong>รหัสวิชา:</strong>{' '}
+                              {row.subject_code || '-'}
+                            </div>
 
-  <div>
-    <strong>ชั้น:</strong>{' '}
-    {row.grade_level || '-'}
-  </div>
-</div>
+                            <div>
+                              <strong>รายวิชา:</strong>{' '}
+                              {row.subject_name || '-'}
+                            </div>
 
-<p className="text-[12px] text-ink-muted mt-2">
-  ปีการศึกษา {row.academic_year}
-  {' · '}
-  ภาคเรียนที่ {row.semester}
-  {' · '}
-  {row.hours} ชั่วโมง/สัปดาห์
-</p>
+                            <div>
+                              <strong>ชั้น:</strong>{' '}
+                              {row.grade_level || '-'}
+                            </div>
 
+                          </div>
+
+                          {/* ปีการศึกษา / ภาคเรียน */}
+                          <p className="text-[12px] text-ink-muted mt-2">
+                            ปีการศึกษา {row.academic_year}
+                            {' · '}
+                            ภาคเรียนที่ {row.semester}
+                            {' · '}
+                            {Number(row.hours || 0)} ชั่วโมง/สัปดาห์
+                          </p>
+
+                        </div>
+
+                        {/* ชั่วโมง */}
                         <span className="chip chip-primary shrink-0">
-                          {row.hours} ชม.
+                          {Number(row.hours || 0)} ชม.
                         </span>
 
                       </div>
 
+                      {/* =================================================
+                          รายละเอียด
+                      ================================================== */}
                       {row.description && (
-                        <p className="mt-4 text-[13.5px] text-ink-soft leading-relaxed">
+                        <p className="mt-4 text-[13.5px] text-ink-soft leading-relaxed whitespace-pre-line">
                           {row.description}
                         </p>
                       )}
 
+                      {/* =================================================
+                          หลักฐาน
+                      ================================================== */}
                       {(row.image_ref || row.file_ref) && (
                         <div className="mt-5 pt-4 border-t border-[color:var(--divider)] flex flex-wrap gap-2">
 
+                          {/* เปิดภาพ */}
                           {row.image_ref && (
                             <a
                               href={imageUrl(
@@ -218,12 +253,15 @@ export default async function WorkloadPage() {
                             </a>
                           )}
 
+                          {/* เปิดเอกสาร */}
                           {row.file_ref && (
                             <a
-                              href={fileUrl({
-                                source: row.file_source,
-                                ref: row.file_ref,
-                              }) ?? '#'}
+                              href={
+                                fileUrl({
+                                  source: row.file_source,
+                                  ref: row.file_ref,
+                                }) ?? '#'
+                              }
                               target="_blank"
                               rel="noreferrer"
                               className="btn btn-white"
@@ -246,9 +284,15 @@ export default async function WorkloadPage() {
           )
         })}
 
+        {/* =====================================================
+            ไม่มีข้อมูล
+        ====================================================== */}
         {rows.length === 0 && (
           <div className="card-soft p-12 text-center">
-            <div className="text-5xl">📋</div>
+
+            <div className="text-5xl">
+              📋
+            </div>
 
             <h2 className="font-bold text-xl mt-4">
               ยังไม่มีข้อมูลภาระงาน
@@ -264,6 +308,7 @@ export default async function WorkloadPage() {
             >
               ไปยังหลังบ้าน
             </Link>
+
           </div>
         )}
 
